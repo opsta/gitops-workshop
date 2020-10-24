@@ -1,0 +1,9 @@
+.classpath
+.gradle
+.project
+.settings
+bin
+test/robot/reports
+k8s/secrets
+k8s/cert-manager
+keys

@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  ratings:
+    build: .
+    ports:
+      - "9080:9080"
+    environment:
+      SERVICE_VERSION: v2 #v1 work standalone without database
+      MONGO_DB_URL: mongodb://ratings:CHANGEME@mongodb:27017/ratings
+      # MYSQL_DB_HOST: mariadb
+      # MYSQL_DB_PORT: 3306
+      # MYSQL_DB_USER: root
+      # MYSQL_DB_PASSWORD: CHANGEME
+  mongodb:
+    image: bitnami/mongodb:4.2.2-debian-9-r30
+    volumes:
+      - ./databases:/docker-entrypoint-initdb.d
+    environment:
+      MONGODB_ROOT_PASSWORD: CHANGEME
+      MONGODB_USERNAME: ratings
+      MONGODB_PASSWORD: CHANGEME
+      MONGODB_DATABASE: ratings

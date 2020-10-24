@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.ratings.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      {{- if .Values.ratings.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.ratings.imagePullSecrets }}
+      {{- end }}
+      containers:
+      - name: {{ .Release.Name }}
+        image: "{{ .Values.ratings.image }}:{{ .Values.ratings.tag }}"
+        imagePullPolicy: {{ .Values.ratings.imagePullPolicy | default "Always" }}
+        {{- if or .Values.extraEnv .Values.ratings.extraSecretEnv }}
+        env:
+        {{- if .Values.extraSecretEnv }}
+        {{- range $key, $value := .Values.extraSecretEnv }}
+        {{- range $secretName, $secretKey := $value }}
+        - name: {{ $key }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: {{ $secretKey }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.extraEnv }}
+        {{- range $key, $value := .Values.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        resources:
+          requests:
+            memory: {{ .Values.ratings.requestMemory }}
+            cpu: {{ .Values.ratings.requestCpu }}
+          limits:
+            memory: {{ .Values.ratings.limitMemory }}
+            cpu: {{ .Values.ratings.limitCpu }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.ratings.healthCheckPath | quote }}
+            port: {{ .Values.ratings.port }}
+            scheme: "HTTP"
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.ratings.healthCheckPath | quote }}
+            port: {{ .Values.ratings.port }}
+            scheme: "HTTP"
+          initialDelaySeconds: 10
+        ports:
+        - name: web-port
+          containerPort: {{ .Values.ratings.port }}

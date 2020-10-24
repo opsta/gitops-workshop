@@ -1,0 +1,139 @@
+@Library('opsta-jenkins-libs@gradle')
+
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////// THIS IS VARIABLES CHANGE BY APPLICATION ///////////////////
+///////////////////////////////////////////////////////////////////////////////
+def appFullName = "bookinfo-ratings"
+def imgNames = "ratings"
+// Variable to use for each environment
+def envVars = [
+  'dev': [
+    envName: 'dev',
+    imgTag: 'dev',
+    // Variable to use for UI Test
+    uiTestVars: [
+      baseUrl: 'https://bookinfo.dev.opsta.co.th',
+      contextPath: '/ratings',
+      robotAppTestsPath: 'test/robot/*.robot'
+    ]
+  ],
+  'master': [
+    envName: 'uat',
+    imgTag: 'uat',
+    uiTestVars: [
+      baseUrl: 'https://bookinfo.uat.opsta.co.th',
+      contextPath: '/ratings',
+      robotAppTestsPath: 'test/robot/*.robot'
+    ]
+  ],
+  'production': [
+    envName: 'prd',
+    imgTag: '',
+    uiTestVars: [
+      baseUrl: 'https://bookinfo.opsta.co.th',
+      contextPath: '/ratings',
+      robotAppTestsPath: 'test/robot/*.robot'
+    ]
+  ]
+]
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////// THIS IS VARIABLES CHANGE BY PROJECT /////////////////////
+///////////////////////////////////////////////////////////////////////////////
+def projectName = 'bookinfo'
+def k8sCloudName = 'kubernetes'
+def imgRepoServerUrl = 'https://registry.demo.opsta.co.th'
+def imgRepoJenkinsCred = 'registry-bookinfo'
+def imgNamePrefix = 'registry.demo.opsta.co.th/bookinfo'
+def kubeConfigJenkinsCred = 'gce-k8s-kubeconfig'
+def gitPushJenkinsCred = 'bookinfo-git-deploy-key'
+def gitCloneUrl = 'git@git.demo.opsta.co.th:bookinfo/ratings.git'
+
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////// BELOW IS RARELY CHANGE ////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+def helmParamArgs = [:]
+def podType = 'java'
+def taggingJobName = 'Gitlab/bookinfo/ratings/tagging'
+def prodJobName = 'Gitlab/bookinfo/ratings/production'
+if(env.JOB_NAME == prodJobName) {
+  properties([
+    parameters([
+      [
+        $class: 'GitParameterDefinition',
+        description: 'Choose tag to deploy to production',
+        name: 'TAG',
+        listSize: '5',
+        quickFilterEnabled: false,
+        selectedValue: 'TOP',
+        sortMode: 'DESCENDING_SMART',
+        tagFilter: 'build-*',
+        type: 'PT_TAG'
+      ]
+    ])
+  ])
+  // Change BRANCH_NAME to production
+  env.BRANCH_NAME = 'production'
+  // Assign Docker Image Tag from parameter
+  envVars[env.BRANCH_NAME]['imgTag'] = params.TAG
+  helmParamArgs['helmExtraParams'] = "--set ratings.tag=${params.TAG}"
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// CI/CD STEPS //////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+inPod(podType, projectName, k8sCloudName) {
+
+  if(env.JOB_NAME == taggingJobName) {
+    // For tagging pipeline job
+    stageTagging(
+      imgNames,
+      "${imgNamePrefix}/${imgNames}",
+      envVars['master']['imgTag'],
+      "build-${env.BUILD_NUMBER}",
+      imgRepoServerUrl,
+      imgRepoJenkinsCred,
+      gitPushJenkinsCred,
+      gitCloneUrl
+    )
+  } else if(env.BRANCH_NAME in ['dev', 'master', 'production']) {
+
+    // MUST CHECKOUT CODE FIRST BEFORE ANYTHING ELSE
+    scmVars = stageCloneRepository()
+
+    if(env.BRANCH_NAME != 'production') {
+      // Build Docker Image only when it is multibranch pipeline job
+      stageBuildDocker(
+        imgNames,
+        envVars[env.BRANCH_NAME]['imgTag'],
+        imgRepoServerUrl,
+        imgRepoJenkinsCred,
+        imgNamePrefix
+      )
+    }
+
+    stageHelmDeploy(
+      projectName,
+      imgNames,
+      envVars[env.BRANCH_NAME]['envName'],
+      kubeConfigJenkinsCred,
+      scmVars,
+      helmParamArgs
+    )
+
+    // Set test path
+    stageRobotTest(
+      imgNames,
+      envVars[env.BRANCH_NAME]['uiTestVars']['robotAppTestsPath'],
+      envVars[env.BRANCH_NAME]['uiTestVars']['baseUrl'],
+      ["contextPath": envVars[env.BRANCH_NAME]['uiTestVars']['contextPath']]
+    )
+    stageRobotPublish()
+
+  }
+
+}

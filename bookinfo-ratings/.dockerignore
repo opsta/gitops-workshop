@@ -1,0 +1,10 @@
+databases
+k8s
+test
+
+.git
+.gitignore
+docker-compose.yml
+Dockerfile
+Jenkinsfile
+README.md

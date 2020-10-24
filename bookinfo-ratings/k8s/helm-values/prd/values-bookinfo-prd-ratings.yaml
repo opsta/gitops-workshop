@@ -1,0 +1,24 @@
+ratings:
+  image: registry.demo.opsta.co.th/bookinfo/ratings
+  tag: latest
+  replicas: 1
+  imagePullPolicy: Always
+  imagePullSecrets: registry-bookinfo
+  requestCpu: 300m
+  requestMemory: 128Mi
+  limitCpu: 1000m
+  limitMemory: 256Mi
+  port: 9080
+  healthCheckPath: "/health"
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  host: bookinfo.opsta.co.th
+  path: "/ratings(/|$)(.*)"
+  serviceType: ClusterIP
+  tlsSecret: opsta-bookinfo-prd
+extraEnv:
+  COMMIT_ID: CHANGE_COMMIT_ID
+  SERVICE_VERSION: v1
