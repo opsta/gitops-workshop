@@ -1,0 +1,39 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: bookinfo-ratings
+  namespace: training1-bookinfo
+spec:
+  chart:
+    spec:
+      chart: ./bookinfo-ratings/k8s/helm/
+      sourceRef:
+        kind: GitRepository
+        name: bookinfo-ratings
+      version: 1.0.0
+  interval: 1m0s
+  values:
+    extraEnv:
+      SERVICE_VERSION: v1
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
+      host: bookinfo.dev.opsta.co.th
+      path: /training1/ratings(/|$)(.*)
+      serviceType: ClusterIP
+      tlsSecret: opsta-bookinfo-dev
+    ratings:
+      healthCheckPath: /health
+      image: registry.demo.opsta.co.th/bookinfo/ratings
+      imagePullPolicy: Always
+      imagePullSecrets: registry-bookinfo
+      limitCpu: 1000m
+      limitMemory: 256Mi
+      port: 9080
+      replicas: 1
+      requestCpu: 300m
+      requestMemory: 128Mi
+      tag: dev
