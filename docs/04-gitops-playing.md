@@ -2,6 +2,7 @@
 
 ## Update code and build new version
 
+* Go to Cloud Shell and open editor
 * Edit `bookinfo-ratings/src/ratings.js` line 207 to the text you want
 * Build new version of Docker Image
 

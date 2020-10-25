@@ -3,7 +3,7 @@
 ## Prepare GitOps for Ratings service
 
 * Go to your ratings repository and click on `Web IDE`
-* Change all the files in `gitops/ratings-dev/*` by changing [X] to your username and append `-dev` to namespace
+* Change all the files in `gitops/ratings-dev/*` by changing [X] to your username
 * Commit the code
 
 ## Create GitLab personal access token

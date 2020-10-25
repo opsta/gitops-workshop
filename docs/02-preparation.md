@@ -35,4 +35,4 @@ docker tag bookinfo-ratings_ratings registry.demo.opsta.co.th/training[X]/bookin
 docker push registry.demo.opsta.co.th/training[X]/bookinfo/ratings:build-1
 ```
 
-Next: [GitOps](03-gitops-prepare.md)
+Next: [GitOps Preparation](03-gitops-prepare.md)
