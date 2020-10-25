@@ -3,11 +3,11 @@ apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: GitRepository
 metadata:
   name: bookinfo-ratings
-  namespace: training1-bookinfo
+  namespace: training[X]-bookinfo
 spec:
   interval: 1m0s
   ref:
     branch: master
-  url: https://git.demo.opsta.co.th/gitops-devfest-2020/training1-ratings.git
+  url: https://git.demo.opsta.co.th/gitops-devfest-2020/training[X]-ratings.git
   secretRef:
     name: git-ratings

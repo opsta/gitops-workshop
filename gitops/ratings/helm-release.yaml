@@ -3,7 +3,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: bookinfo-ratings
-  namespace: training1-bookinfo
+  namespace: training[X]-bookinfo
 spec:
   chart:
     spec:
@@ -22,7 +22,7 @@ spec:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/rewrite-target: /$2
       host: bookinfo.dev.opsta.co.th
-      path: /training1/ratings(/|$)(.*)
+      path: /training[X]/ratings(/|$)(.*)
       serviceType: ClusterIP
       tlsSecret: opsta-bookinfo-dev
     ratings:
