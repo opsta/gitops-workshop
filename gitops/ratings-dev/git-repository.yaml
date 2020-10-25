@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: GitRepository
 metadata:
   name: bookinfo-ratings
-  namespace: training[X]-bookinfo
+  namespace: training[X]-bookinfo-dev
 spec:
   interval: 1m0s
   ref:

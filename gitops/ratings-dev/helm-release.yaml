@@ -3,7 +3,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: bookinfo-ratings
-  namespace: training[X]-bookinfo
+  namespace: training[X]-bookinfo-dev
 spec:
   chart:
     spec:
@@ -12,7 +12,7 @@ spec:
         kind: GitRepository
         name: bookinfo-ratings
       version: 1.0.0
-  interval: 1m0s
+  interval: 30s
   values:
     extraEnv:
       SERVICE_VERSION: v1
@@ -27,7 +27,7 @@ spec:
       tlsSecret: opsta-bookinfo-dev
     ratings:
       healthCheckPath: /health
-      image: registry.demo.opsta.co.th/bookinfo/ratings
+      image: registry.demo.opsta.co.th/training[X]/bookinfo/ratings
       imagePullPolicy: Always
       imagePullSecrets: registry-bookinfo
       limitCpu: 1000m
@@ -36,4 +36,4 @@ spec:
       replicas: 1
       requestCpu: 300m
       requestMemory: 128Mi
-      tag: dev
+      tag: build-1
