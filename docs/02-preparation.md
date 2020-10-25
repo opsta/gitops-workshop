@@ -1,4 +1,4 @@
-# Git and GitLab Workshop
+# Preparation
 
 ## Prepare Git Repository
 
