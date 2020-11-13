@@ -20,3 +20,7 @@ helm version
 
 # Install Toolkit CLI
 curl -s https://toolkit.fluxcd.io/install.sh | sudo bash
+
+# Install Siege
+sudo apt update
+sudo apt -y install siege
