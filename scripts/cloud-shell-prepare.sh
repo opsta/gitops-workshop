@@ -3,16 +3,11 @@
 # Generate SSH
 [[ ! -f ~/.ssh/id_rsa ]] && ssh-keygen -f ~/.ssh/id_rsa -N ""
 
-# Update openssl
-sudo apt update
-sudo apt install -y openssl
-
 # Install Docker Compose
-sudo curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-`uname -s`-`uname -m` \
-  -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+sudo pip3 install docker-compose
+sudo curl -L https://raw.githubusercontent.com/docker/compose/1.27.4/contrib/completion/bash/docker-compose \
+  -o /etc/bash_completion.d/docker-compose
 docker-compose version
-export LD_LIBRARY_PATH="/usr/local/lib"
 
 # Install Helm
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
@@ -24,3 +19,18 @@ curl -s https://toolkit.fluxcd.io/install.sh | sudo bash
 # Install Siege
 sudo apt update
 sudo apt -y install siege
+
+# Install Grype
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+
+# Put Bash Completion into .bashrc file
+tee -a ~/.bashrc > /dev/null <<EOT
+if command -v grype &> /dev/null
+then
+  # Bash Completion
+  . <(kubectl completion bash)
+  . <(helm completion bash)
+  . <(flux completion bash)
+  . <(grype completion bash)
+fi
+EOT
