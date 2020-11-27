@@ -23,6 +23,9 @@ sudo apt -y install siege
 # Install Grype
 curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
 
+# Install Syft
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sudo sh -s -- -b /usr/local/bin
+
 # Put Bash Completion into .bashrc file
 tee -a ~/.bashrc > /dev/null <<EOT
 if command -v grype &> /dev/null
@@ -32,5 +35,6 @@ then
   . <(helm completion bash)
   . <(flux completion bash)
   . <(grype completion bash)
+  . <(syft completion bash)
 fi
 EOT
