@@ -12,9 +12,9 @@ Opsta (Thailand) Co.,Ltd.
 
 | Tools           | Description                                                                                                                                                                                              |
 |-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GitLab          | <https://git.demo.opsta.co.th><br/>user: training1, training2, … , training50<br/>pass: OpstaThailand                                                                                                                    |
-| Nexus           | <https://nexus.demo.opsta.co.th> for Artifacts Server<br/><https://registry.demo.opsta.co.th> for Docker Private Registry<br/>user: bookinfo<br/>Pass: OpstaThailand                                |
-| Cloud Shell     | <https://console.cloud.google.com><br/>user: training[X]@opsta.in.th<br/>pass: OpstaThailand                                                                                                                    |
+| GitLab          | <https://git.demo.opsta.co.th><br/>user: training1, training2, … , training50                                                                                                                    |
+| Nexus           | <https://nexus.demo.opsta.co.th> for Artifacts Server<br/><https://registry.demo.opsta.co.th> for Docker Private Registry<br/>user: bookinfo                                |
+| Cloud Shell     | <https://console.cloud.google.com><br/>user: training[X]@opsta.in.th                                                                                                                    |
 | Bookinfo Domain | <http://bookinfo.opsta.co.th/training[X]/productpage><br/><http://bookinfo.opsta.co.th/training[X]/reviews><br/><http://bookinfo.opsta.co.th/training[X]/details><br/><http://bookinfo.opsta.co.th/training[X]/ratings> |
 
 ## Workshop
