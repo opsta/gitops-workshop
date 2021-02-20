@@ -5,7 +5,7 @@
 
 # Install Docker Compose
 sudo CRYPTOGRAPHY_DONT_BUILD_RUST=1 pip3 install docker-compose
-sudo curl -L https://raw.githubusercontent.com/docker/compose/1.28.2/contrib/completion/bash/docker-compose \
+sudo curl -L https://raw.githubusercontent.com/docker/compose/1.28.4/contrib/completion/bash/docker-compose \
   -o /etc/bash_completion.d/docker-compose
 docker-compose version
 
